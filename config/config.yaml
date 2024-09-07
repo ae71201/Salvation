@@ -1,1 +1,174 @@
 
+mixed-port: 7893 # HTTP(S)，SOCKS
+allow-lan: true
+log-level: silent
+external-controller: 0.0.0.0:9090
+secret: '123456'
+bind-address: "*"
+external-ui: /etc/mihomo/ui
+external-ui-name: xd
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+mode: rule #规则模式
+geox-url:
+  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
+geo-auto-update: false
+geo-update-interval: 720
+find-process-mode: strict
+global-client-fingerprint: chrome
+ipv6: false
+tcp-concurrent: false #TCP并发
+tun:
+  enable: true
+  stack: mixed # gvisor/system
+  dns-hijack:
+    - 0.0.0.0:53
+  auto-detect-interface: true # 自动识别出口网卡
+  auto-route: true # 配置路由表
+  auto-redirect: true # 自动配置 iptables 以重定向TCP连接，仅支持Linux
+  strict-route: false # linux：让不支持的网络无法到达，将所有连接路由到 tun
+  route-exclude-address-set: #匹配的流量将绕过路由，需要 nftables、auto-route和auto-redirect已启用
+    - cn_ip
+dns:
+  cache-algorithm: arc
+  enable: true
+  ipv6: false
+  prefer-h3: false # 是否开启 DoH 支持 HTTP/3，将并发尝试
+  enhanced-mode: fake-ip # or redir-host
+  fake-ip-range: 198.18.0.1/16
+  listen: 0.0.0.0:53
+  fake-ip-filter:
+  - 'rule-set:cn,private'
+  - 'rule-set:fakeip-filter'
+  - 'www.wr924.eu.org'
+  nameserver:
+  - 192.168.2.31
+  default-nameserver: #用于解析 DNS服务器 的域名
+  - https://223.5.5.5/dns-query
+  nameserver-policy: #优先查询
+   "rule-set:category-ads-all": 'rcode://success'
+profile:
+  store-selected: true # 储存 API 对策略组的选择
+  store-fake-ip: true # 储存 fakeip 映射表
+#####   锚点 start   #####
+pr: &pr {type: select, proxies: [DIRECT,'♻️','🇭🇰 香港','🇭🇰 散列','🇹🇼 台湾','🇯🇵 日本','🇺🇸 美国','🇦🇺 澳洲','🇸🇬 新加坡','🌐']} #策略组相关
+p: &p {type: http, interval: 10800, health-check: {enable: true, url: https://www.gstatic.com/generate_204, interval: 180}} #订阅更新&延迟测试相关
+#####   锚点 end   #####
+proxy-providers:
+  Biteb:
+    <<: *p
+    url: "订阅连接"
+proxies:
+proxy-groups:
+ - {name: '♻️', type: url-test, include-all: true, tolerance: 30}
+ - {name: '🌐', type: select, include-all: true}
+ - {name: '🐟', <<: *pr}
+ - {name: '🇧', <<: *pr}
+ - {name: '▶', <<: *pr}
+ - {name: '❄', <<: *pr}
+ - {name: '🇨🇳', <<: *pr}
+ - {name: 'Ⓜ', <<: *pr}
+ - {name: '✈', <<: *pr}
+ - {name: '🇬', <<: *pr}
+ - {name: '🍎', <<: *pr}
+ - {name: '🔞', <<: *pr}
+ - {name: '⚡', <<: *pr}
+ - {name: '🤖', <<: *pr}
+#策略组
+ - {name: '🇭🇰 香港', type: url-test, include-all: true, filter: "(?i)Hong|香港|HK"}
+ - {name: '🇹🇼 台湾', type: url-test, include-all: true, filter: "(?i)Taiwan|台湾|台北|新北|彰化|TW"}
+ - {name: '🇦🇺 澳洲', type: url-test, include-all: true, filter: "(?i)澳|澳洲|AU"}
+ - {name: '🇯🇵 日本', type: url-test, include-all: true, filter: "(?i)Japan|日本|川日|东京|大阪|泉日|埼玉|JP"}
+ - {name: '🇺🇸 美国', type: url-test, include-all: true, filter: "(?i)United States|美国|硅谷|洛杉矶|西雅图|圣何塞|US"}
+ - {name: '🇸🇬 新加坡', type: url-test, include-all: true, filter: "(?i)Singapore|新加坡|狮城|SG"}
+ - {name: '🇭🇰 散列',type: load-balance,strategy: consistent-hashing,include-all: true,hidden: true,filter: "(?i)Hong|香港|HK"}
+rules:
+- RULE-SET, category-ads-all, REJECT
+- RULE-SET, AEdirect, DIRECT
+- RULE-SET, AEproxy, 🐟
+- RULE-SET, bing, 🇧
+- RULE-SET, private, DIRECT
+- RULE-SET, private_ip, DIRECT, no-resolve
+#- RULE-SET, cn, DIRECT
+#- RULE-SET, cn_ip, DIRECT, no-resolve
+- RULE-SET, apple@cn, 🍎
+- RULE-SET, telegram_ip, ✈, no-resolve
+- RULE-SET, telegram, ✈
+- RULE-SET, blizzard, ❄
+- RULE-SET, speedtest, ⚡
+- RULE-SET, openai, 🤖
+- RULE-SET, github, 🐟
+- RULE-SET, microsoft, Ⓜ
+- RULE-SET, youtube, ▶
+- RULE-SET, google, 🇬
+- RULE-SET, google_ip, 🇬, no-resolve
+- RULE-SET, pornhub, 🔞
+- RULE-SET, geolocation-!cn, 🐟
+- MATCH, 🇨🇳
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+rule-providers:
+  AEproxy: {type: http,behavior: domain,interval: 86400,format: yaml,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEproxy.yaml"}
+  AEdirect: {type: http,behavior: domain,interval: 86400,format: yaml,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEdorect.yaml"}
+  fakeip-filter:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/fakeip-filter.mrs"
+  category-ads-all:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"
+  private:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
+  cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+  blizzard:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/blizzard.mrs"
+  apple@cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple@cn.mrs"
+  bing:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/bing.mrs"
+  microsoft:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"
+  speedtest:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/speedtest.mrs"
+  pornhub:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/pornhub.mrs"
+  github:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"
+  youtube:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+  google:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+  telegram:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
+  openai:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs"
+  geolocation-!cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"
+  private_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"
+  cn_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+  google_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"
+  telegram_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"
