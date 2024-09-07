@@ -110,8 +110,8 @@ rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
 rule-providers:
-  AEproxy: {type: http,behavior: domain,interval: 86400,format: yaml,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEproxy.yaml"}
-  AEdirect: {type: http,behavior: domain,interval: 86400,format: yaml,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEdorect.yaml"}
+  AEproxy: {type: http,behavior: domain,interval: 86400,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEproxy.yaml"}
+  AEdirect: {type: http,behavior: domain,interval: 86400,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEdirect.yaml"}
   fakeip-filter:
     <<: *domain
     url: "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/fakeip-filter.mrs"
