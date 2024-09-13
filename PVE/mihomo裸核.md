@@ -58,7 +58,7 @@ apt install -y git wget
 
 ### 1、使用以下命令，创建 mihomo 文件夹
 ~~~
-mkdir /root/mihomo
+mkdir /etc/mihomo
 ~~~
 
 ### 2、使用以下命令，下载 mihomo 内核
