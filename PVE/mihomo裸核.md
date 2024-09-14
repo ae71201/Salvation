@@ -14,7 +14,7 @@ echo -e "lxc.cgroup2.devices.allow: c 10:200 rwm\nlxc.mount.entry: /dev/net/tun 
 ## 三、换源
 - PS：在创建的 mihomo 的 LXC 容器操作
 
-### 使用以下命令，添加清华源
+### 使用以下命令，添加 [清华源](https://mirrors.help/debian/) 
 ```
 cat << EOF > /etc/apt/sources.list
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
@@ -30,7 +30,6 @@ EOF
 ```
 echo -e "net.ipv4.ip_forward = 1" >>/etc/sysctl.conf
 ```
-
 ### 使用以下命令，开启 V4 & V6 路由转发
 ```
 echo -e "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 1" >>/etc/sysctl.conf
@@ -46,7 +45,6 @@ echo "PermitRootLogin yes" >> /etc/ssh/sshd_config && systemctl restart sshd
 ```
 apt update && apt dist-upgrade -y
 ```
-
 ## 六、安装必须插件
 
 ### 使用以下命令，安装必要插件
@@ -60,28 +58,23 @@ apt install -y git wget
 ~~~
 mkdir /etc/mihomo
 ~~~
-
 ### 2、使用以下命令，下载 mihomo 内核
 #### PS： 首先查看 [最新版](https://wiki.metacubex.one/startup/#__tabbed_1_2) 的版本号，下面命令里面的 **版本号** ，修改成最新的版本号！！！
 ~~~
 wget https://mirror.ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-alpha-版本号.gz
 ~~~
-
 ### 3、使用以下命令，解压文件（需要修改成你下载的版本号！！！）
 ~~~
 gzip -d mihomo-linux-amd64-compatible-alpha-版本号.gz
 ~~~
-
 ### 4、使用以下命令，授权最高权限（需要修改成你下载的版本号！！！）
 ~~~
 chmod 755 mihomo-linux-amd64-compatible-alpha-版本号
 ~~~
-
-### 5、使用以下命令，重名名为 mihomo 并移动到 /root/mihomo/ （需要修改成你下载的版本号！！！）
+### 5、使用以下命令，重名名为 mihomo 并移动到 /usr/local/bin/ （需要修改成你下载的版本号！！！）
 ~~~
 mv mihomo-linux-amd64-compatible-alpha-版本号 /usr/local/bin/mihomo
 ~~~
-
 ### 6、使用以下命令，把配置文件全部粘贴进去，按 Ctrl+x，按y保存。
 - ps：使用官方推荐配置或者自己按照官方例子修改，也可以使用我提供的 [config](https://github.com/ae71201/mihomo/blob/main/config/config.yaml) 文件
 ~~~
