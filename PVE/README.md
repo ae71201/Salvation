@@ -10,7 +10,9 @@
 
 ```bash
 chmod 755 /usr/local/bin/xxx.sh
+```
 
 ## 执行脚本
+
 ```bash
 bash xxx.sh
