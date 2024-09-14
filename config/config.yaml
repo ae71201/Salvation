@@ -9,12 +9,6 @@ external-ui: /etc/mihomo/ui
 external-ui-name: xd
 external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
 mode: rule #规则模式
-geox-url:
-  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
-  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
-  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
-geo-auto-update: false
-geo-update-interval: 720
 find-process-mode: strict
 global-client-fingerprint: chrome
 ipv6: false
@@ -30,6 +24,17 @@ tun:
   strict-route: false # linux：让不支持的网络无法到达，将所有连接路由到 tun
   route-exclude-address-set: #匹配的流量将绕过路由，需要 nftables、auto-route和auto-redirect已启用
     - cn_ip
+sniffer:
+  enable: true
+  force-dns-mapping: true # 对所有未获取到域名的流量进行强制嗅探
+  parse-pure-ip: true
+  override-destination: true
+  sniff: # TLS和QUIC默认如果不配置ports则默认嗅探443
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true 
+    TLS:
+    QUIC:
 dns:
   cache-algorithm: arc
   enable: true
