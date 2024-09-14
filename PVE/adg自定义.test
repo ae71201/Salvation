@@ -1,0 +1,15 @@
+!屏蔽苹果OTA更新
+||xp.apple.com^
+||mesu.apple.com^
+||gdmf.apple.com^
+||ocsp.apple.com^
+||appldnld.apple.com^
+||world-gen.g.aaplimg.com^
+！屏蔽小米系统更新
+||update.miui.com
+!ipad游戏广告
+||pangolin-sdk-toutiao*.com^
+||trackingio.com^
+!放行京东和淘宝
+@@||s.click.taobao.com^$important
+@@||wl.jd.com^$important
