@@ -12,6 +12,7 @@ mode: rule #规则模式
 find-process-mode: strict
 global-client-fingerprint: chrome
 ipv6: false
+unified-delay: true # 统一延迟
 tcp-concurrent: false #TCP并发
 tun:
   enable: true
