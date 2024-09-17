@@ -83,7 +83,7 @@ rules:
 - RULE-SET, AEdirect, DIRECT
 - RULE-SET, AEproxy, 🐟
 - RULE-SET, bing, 🇧
-- RULE-SET, private, DIRECT
+#- RULE-SET, private, DIRECT
 - RULE-SET, private_ip, DIRECT, no-resolve
 - RULE-SET, apple@cn, 🍎
 - RULE-SET, telegram_ip, ✈, no-resolve
