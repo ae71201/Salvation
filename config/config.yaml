@@ -5,8 +5,6 @@ bind-address: "*"
 mode: rule # 规则模式
 find-process-mode: strict
 global-client-fingerprint: chrome
-ipv6: true
-udp: true
 external-controller: 0.0.0.0:9090
 secret: '123456'
 external-ui: /etc/mihomo/ui
