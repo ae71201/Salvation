@@ -1,0 +1,171 @@
+mixed-port: 7893 # HTTP(S)，SOCKS
+allow-lan: true
+log-level: silent
+bind-address: "*"
+mode: rule  # 规则模式
+find-process-mode: strict
+global-client-fingerprint: chrome
+external-controller: 0.0.0.0:9090
+secret: '123456'
+external-ui: /etc/mihomo/ui
+external-ui-name: xd
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+keep-alive-idle: 600     # 空闲时间 减少移动设备耗电问题
+keep-alive-interval: 15  # 间隔时间 
+tun:
+  enable: true
+  stack: mixed            # gvisor/system
+  dns-hijack:
+    - 0.0.0.0:53
+  auto-detect-interface: true # 自动识别出口网卡
+  auto-route: true            # 配置路由表
+  auto-redirect: true         # 自动配置 iptables 以重定向TCP连接，仅支持Linux
+  route-exclude-address-set:  # 匹配的流量将绕过路由，需要 nftables、auto-route和auto-redirect已启用
+    - cn_ip
+dns:
+  cache-algorithm: arc
+  enable: true
+  ipv6: true
+  respect-rules: false   #dns 连接遵守路由规则，需配置 proxy-server-nameserver
+  enhanced-mode: fake-ip # or redir-host
+  fake-ip-range: 198.18.0.1/16
+  listen: 0.0.0.0:53
+  fake-ip-filter:
+  - rule-set:cn,private,microsoft@cn
+  - rule-set:fakeip-filter
+  - www.wr924.eu.org
+  nameserver:
+  - 192.168.2.31
+  default-nameserver:  #用于解析 DNS服务器 的域名
+  - https://223.5.5.5/dns-query
+  nameserver-policy:   #优先查询
+   "rule-set:category-ads-all": 'rcode://success'
+profile:
+  store-selected: true # 储存 API 对策略组的选择
+  store-fake-ip: true  # 储存 fakeip 映射表
+#####   锚点 start   #####
+pr: &pr {type: select, proxies: [DIRECT,'♻️','🇭🇰 香港','🇭🇰 散列','🇹🇼 台湾','🇯🇵 日本','🇺🇸 美国','🇺🇸 散列','🇦🇺 澳洲','🇸🇬 新加坡','🌐']} #策略组相关
+p: &p {type: http, interval: 10800, health-check: {enable: true, url: https://www.gstatic.com/generate_204, interval: 180}} #订阅更新&延迟测试相关
+#####   锚点 end   #####
+proxy-providers:
+  Biteb:
+    <<: *p
+    url: "机场订阅链接"
+proxies:
+proxy-groups:
+ - {name: '♻️', type: url-test, include-all: true, tolerance: 30}
+ - {name: '🌐', type: select, include-all: true}
+ - {name: '🐟️', <<: *pr}
+ - {name: '🔞', <<: *pr}
+ - {name: '❄', <<: *pr}
+ - {name: '🇧', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Copilot.png}
+ - {name: '▶️', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png}
+ - {name: 'Ⓜ', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png}
+ - {name: '✈', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png}
+ - {name: '🇬', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png}
+ - {name: '🍎', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png}
+ - {name: '⚡', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Speedtest.png}
+ - {name: '🤖', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/ChatGPT.png}
+ - {name: 'GitHub', <<: *pr,icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/GitHub.png}
+#策略组
+ - {name: '🇭🇰 香港', type: url-test, include-all: true, filter: "(?i)Hong|香港|HK"}
+ - {name: '🇹🇼 台湾', type: url-test, include-all: true, filter: "(?i)Taiwan|台湾|台北|新北|彰化|TW"}
+ - {name: '🇦🇺 澳洲', type: url-test, include-all: true, filter: "(?i)澳|澳洲|AU"}
+ - {name: '🇯🇵 日本', type: url-test, include-all: true, filter: "(?i)Japan|日本|川日|东京|大阪|泉日|埼玉|JP"}
+ - {name: '🇺🇸 美国', type: url-test, include-all: true, filter: "(?i)United States|美国|硅谷|洛杉矶|西雅图|圣何塞|US"}
+ - {name: '🇸🇬 新加坡',type: url-test, include-all: true, filter: "(?i)Singapore|新加坡|狮城|SG"}
+ - {name: '🇭🇰 散列',type: load-balance,strategy: consistent-hashing,include-all: true,hidden: true,filter: "(?i)Hong|香港|HK"}
+ - {name: '🇺🇸 散列',type: load-balance,strategy: consistent-hashing,include-all: true,hidden: true,filter: "(?i)United States|美国|硅谷|洛杉矶|西雅图|圣何塞|US"}
+rules:
+- RULE-SET, category-ads-all, REJECT
+- RULE-SET, AEdirect, DIRECT
+- RULE-SET, AEproxy, 🐟️
+- RULE-SET, bing, 🇧
+#- RULE-SET, private, DIRECT
+- RULE-SET, private_ip, DIRECT, no-resolve
+- RULE-SET, apple@cn, 🍎
+- RULE-SET, telegram_ip, ✈, no-resolve
+- RULE-SET, telegram, ✈
+- RULE-SET, blizzard, ❄
+- RULE-SET, speedtest, ⚡
+- RULE-SET, openai, 🤖
+- RULE-SET, github, GitHub
+- RULE-SET, microsoft@cn, DIRECT
+- RULE-SET, microsoft, Ⓜ
+- RULE-SET, youtube, ▶️
+- RULE-SET, google, 🇬
+- RULE-SET, google_ip, 🇬, no-resolve
+- RULE-SET, pornhub, 🔞
+- RULE-SET, geolocation-!cn, 🐟️
+#- RULE-SET, cn, DIRECT
+#- RULE-SET, cn_ip, DIRECT, no-resolve
+- MATCH, DIRECT
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+rule-providers:
+  AEproxy: {type: http,behavior: domain,interval: 86400,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEproxy.yaml"}
+  AEdirect: {type: http,behavior: domain,interval: 86400,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEdirect.yaml"}
+  fakeip-filter:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/fakeip-filter.mrs"
+  category-ads-all:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"
+  private:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
+  cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+  blizzard:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/blizzard.mrs"
+  apple@cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple@cn.mrs"
+  bing:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/bing.mrs"
+  microsoft@cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft@cn.mrs"
+  microsoft:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"
+  speedtest:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/speedtest.mrs"
+  pornhub:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/pornhub.mrs"
+  github:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"
+  youtube:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+  google:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+  telegram:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
+  openai:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs"
+  geolocation-!cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"
+  private_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"
+  cn_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+  google_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"
+  telegram_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"
