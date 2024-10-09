@@ -33,7 +33,6 @@ dns:
   fake-ip-filter:
   - rule-set:cn,private,microsoft@cn
   - rule-set:fakeip-filter
-  - www.wr924.eu.org
   nameserver:
   - 192.168.2.31
   default-nameserver:  #用于解析 DNS服务器 的域名
