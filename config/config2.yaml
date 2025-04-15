@@ -107,7 +107,7 @@ rule-providers:
   AEdirect: {type: http,behavior: domain,interval: 86400,url: "https://raw.githubusercontent.com/ae71201/mihomo/main/rules/AEdirect.yaml"}
   fakeip-filter:
     <<: *domain
-    url: "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/fakeip-filter.mrs"
+    url: "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/refs/heads/mihomo-ruleset/fakeip-filter.mrs"
   category-ads-all:
     <<: *domain
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs"
