@@ -4,7 +4,7 @@
 response=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases)
 
 # 从API响应中提取alpha版本文件名
-alpha_version=$(echo "$response" | grep -oP '(?<=mihomo-linux-amd64-compatible-alpha-)[a-f0-9]+(?=\.gz)' | head -n 1)
+alpha_version=$(echo "$response" | grep -oP '(?<=mihomo-linux-amd64-v2-alpha-)[a-f0-9]+(?=\.gz)' | head -n 1)
 
 # 检查是否成功获取到版本号
 if [[ -z "$alpha_version" ]]; then
@@ -16,7 +16,7 @@ fi
 
 # 构建下载链接并加上GitHub代理加速
 github_proxy="https://mirror.ghproxy.com/"
-download_url="${github_proxy}https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-alpha-$alpha_version.gz"
+download_url="${github_proxy}https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-v2-alpha-$alpha_version.gz"
 
 # 使用wget下载文件
 wget $download_url -O /tmp/mihomo.gz
