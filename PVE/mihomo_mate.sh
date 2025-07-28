@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# 1. 获取最新版本号（compatible版本）
+# 1. 获取最新版本号（v2版本）
 latest_version=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep -oP '"tag_name": "\K(.*?)(?=")')
 echo "最新版本号为: $latest_version"
 
-# 2. 下载最新的 compatible 版本文件
-download_url="https://mirror.ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/${latest_version}/mihomo-linux-amd64-compatible-${latest_version}.gz"
+# 2. 下载最新的 v2 版本文件
+download_url="https://mirror.ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/${latest_version}/mihomo-linux-amd64-v2-${latest_version}.gz"
 wget $download_url -O /tmp/mihomo.gz
 
 # 3. 使用gzip解压文件
