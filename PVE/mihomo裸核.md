@@ -1,5 +1,5 @@
 # 自用安装教程
-- PS：下载compatible的版本: 使用 GOAMD64=v1 标签进行编译
+- PS：J4125下载v2的版本: 使用 GOAMD64=v2 标签进行编译
 
 ## 一、Proxmox VE 安装 LXC 模板，系统选择 Debian12
 
@@ -61,19 +61,19 @@ mkdir /etc/mihomo
 ### 2、使用以下命令，下载 mihomo 内核
 #### PS： 首先查看 [最新版](https://wiki.metacubex.one/startup/#__tabbed_1_2) 的版本号，下面命令里面的 **版本号** ，修改成最新的版本号！！！
 ~~~
-wget https://mirror.ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-compatible-alpha-版本号.gz
+wget https://mirror.ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-amd64-v2-alpha-版本号.gz
 ~~~
 ### 3、使用以下命令，解压文件（需要修改成你下载的版本号！！！）
 ~~~
-gzip -d mihomo-linux-amd64-compatible-alpha-版本号.gz
+gzip -d mihomo-linux-amd64-v2-alpha-版本号.gz
 ~~~
 ### 4、使用以下命令，授权最高权限（需要修改成你下载的版本号！！！）
 ~~~
-chmod 755 mihomo-linux-amd64-compatible-alpha-版本号
+chmod 755 mihomo-linux-amd64-v2-alpha-版本号
 ~~~
 ### 5、使用以下命令，重名名为 mihomo 并移动到 /usr/local/bin/ （需要修改成你下载的版本号！！！）
 ~~~
-mv mihomo-linux-amd64-compatible-alpha-版本号 /usr/local/bin/mihomo
+mv mihomo-linux-amd64-v2-alpha-版本号 /usr/local/bin/mihomo
 ~~~
 ### 6、使用以下命令，把配置文件全部粘贴进去，按 Ctrl+x，按y保存。
 - ps：使用官方推荐配置或者自己按照官方例子修改，也可以使用我提供的 [config](https://github.com/ae71201/mihomo/blob/main/config/config.yaml) 文件
