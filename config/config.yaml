@@ -62,6 +62,7 @@ proxies:
 proxy-groups:
  - {name: '♻️', type: url-test, include-all: true, tolerance: 30}
  - {name: '🌐', type: select, include-all: true}
+ - {name: '🚀', <<: *pr}
  - {name: '🐟️', <<: *pr}
  - {name: '🔞', <<: *pr}
  - {name: '❄', <<: *pr}
@@ -84,10 +85,10 @@ proxy-groups:
  - {name: '🇸🇬 新加坡',type: url-test, include-all: true, filter: "(?i)Singapore|新加坡|狮城|SG"}
  - {name: '🇭🇰 散列',type: load-balance,strategy: consistent-hashing,include-all: true,hidden: true,filter: "(?i)Hong|香港|HK"}
  - {name: '🇺🇸 散列',type: load-balance,strategy: consistent-hashing,include-all: true,hidden: true,filter: "(?i)United States|美国|硅谷|洛杉矶|西雅图|圣何塞|US"}
-- {name: '🚧', type: fallback, proxies: ['🇸🇬 新加坡','🇦🇺 澳洲','🇯🇵 日本','🇹🇼 台湾','🇭🇰 香港']}
+ - {name: '🚧', type: fallback, proxies: ['🇸🇬 新加坡','🇦🇺 澳洲','🇯🇵 日本','🇹🇼 台湾','🇭🇰 香港']}
 rules:
 - RULE-SET, AEdirect, DIRECT
-- RULE-SET, AEproxy, 🐟️
+- RULE-SET, AEproxy, 🚀
 - RULE-SET, bing, 🇧
 - RULE-SET, private_ip, DIRECT, no-resolve
 - RULE-SET, apple@cn, 🍎
@@ -95,7 +96,7 @@ rules:
 - RULE-SET, telegram, ✈
 - RULE-SET, blizzard, ❄
 - RULE-SET, speedtest, ⚡
-- RULE-SET, openai, 🤖
+- RULE-SET, ai, 🤖
 - RULE-SET, github, GitHub
 - RULE-SET, microsoft@cn, DIRECT
 - RULE-SET, microsoft, Ⓜ
@@ -104,8 +105,8 @@ rules:
 - RULE-SET, google, 🇬
 - RULE-SET, google_ip, 🇬, no-resolve
 - RULE-SET, pornhub, 🔞
-- RULE-SET, geolocation-!cn, 🐟️
-- MATCH, DIRECT
+- RULE-SET, geolocation-!cn, 🚀
+- MATCH, 🐟️
 rule-anchor:
   ip: &ip           {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   domain: &domain   {type: http, interval: 86400, behavior: domain, format: mrs}
